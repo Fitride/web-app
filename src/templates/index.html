@@ -4,18 +4,45 @@
 <head>
   <title>Fit Ride</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
-  <script src="{{ url_for('static', filename='main.js') }}"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='bikeRiding.css') }}">
+  <script>
+    function restartVideo() {
+      var videoElement = document.getElementById('videoStream');
+      // Append a unique query parameter to the src to force reload
+      var uniqueSrc = "{{ url_for('video') }}" + "?t=" + new Date().getTime();
+      videoElement.src = uniqueSrc; // Reset the src to restart the video
+      videoElement.style.display = ''; // Make sure the video element is visible
+      document.getElementById('videoWait').style.display = 'none';
+    }
+
+
+    function shutDownVideo() {
+      // Send a request to the Flask server to shut down the video stream
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", "{{ url_for('shutdown_video') }}", true);
+      xhr.send();
+
+      // Optionally, hide the video element or display a placeholder
+      if (document.getElementById('videoStream').style.display == 'none') {
+        console.log("resart")
+        restartVideo()
+      } else {
+        document.getElementById('videoStream').style.display = 'none';
+        document.getElementById('videoWait').style.display = '';
+        console.log("close")
+      }
+    }
+  </script>
 </head>
 
 <body>
   <h1>Live streaming</h1>
-  <div>
-    <div id="image">
-      <!--<img id="placeholderImage" src="placeholder.jpg" width="50%">-->
-      <img id="videoStream" src="{{ url_for('video') }}" width="50%" />
-    </div>
-    <!-- Call the shutDownVideo function when the button is clicked -->
-    <button type="button" onclick="shutDownVideo()">Shut Down Camera</button>
+  <div id="image">
+    <img id="videoWait" src="{{ url_for('static', filename='videoWait.mp4') }}" style="display: none;"/>
+    <img id="videoStream" src="{{ url_for('video') }}" width="50%" style="display: '';" />
+  </div>
+  <!-- Call the shutDownVideo function when the button is clicked -->
+  <button type="button" onclick="shutDownVideo()">Shut Down Camera</button>
   </div>
 </body>
 
