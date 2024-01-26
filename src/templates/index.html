@@ -4,7 +4,6 @@
 <head>
   <title>Fit Ride</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='bikeRiding.css') }}">
   <script>
     function restartVideo() {
       var videoElement = document.getElementById('videoStream');
@@ -38,7 +37,9 @@
 <body>
   <h1>Live streaming</h1>
   <div id="image">
-    <img id="videoWait" src="{{ url_for('static', filename='videoWait.mp4') }}" style="display: none;"/>
+    <video id="videoWait" autoplay loop muted style="display: none;">
+      <source src="{{ url_for('static', filename='Videos/src/videoWait.mp4') }}" type="video/mp4">
+    </video>
     <img id="videoStream" src="{{ url_for('video') }}" width="50%" style="display: '';" />
   </div>
   <!-- Call the shutDownVideo function when the button is clicked -->
