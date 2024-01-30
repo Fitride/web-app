@@ -9,8 +9,6 @@ except:
 
 class Drawing:
     def __init__(self):
-        self.camera = None,
-        self.is_camera_active = True
         self.mp_pose = mp.solutions.pose
         self.pose = self.mp_pose.Pose()
         self.mp_draw = mp.solutions.drawing_utils
@@ -22,24 +20,24 @@ class Drawing:
             (self.mp_pose.PoseLandmark.LEFT_KNEE, self.mp_pose.PoseLandmark.LEFT_ANKLE),
         ]
 
-    def initialize_camera(self) -> int:
+    @staticmethod
+    def initialize_camera(camera) -> int:
         """
             Function to Shutdown or Setup the camera.
             Returns:
                 int: 0 if function run correctly
         """
         # Release the camera if it's open
-        if self.camera is not None and self.camera.isOpened():
-            self.camera.release()
+        if camera is not None and camera.isOpened():
+            camera.release()
 
         # Re-initialize the camera
-        self.camera = cv2.VideoCapture(0)
-        if not self.camera.isOpened():
+        camera = cv2.VideoCapture(0)
+        if not camera.isOpened():
             raise RuntimeError("Could not initialize camera")
 
         # Indicate that the camera is now active
-        self.is_camera_active = True
-        return 0
+        return True, camera
     
     @staticmethod
     def coordonnate_association(landmarks, mp_pose):
@@ -61,16 +59,16 @@ class Drawing:
         return shoulder, elbow, wrist, knee, ankle, hip
     
 
-    def generate_frames(self):
+    def generate_frames(self, is_camera_active, camera):
         """
             Function to display computer vision solution 
             and draw the skeleton on the screen.
             Returns:
                 None
         """
-        while self.is_camera_active:
+        while is_camera_active:
             # read the camera frame
-            success, frame = self.camera.read()
+            success, frame = camera.read()
             if not success:
                 raise RuntimeError("Failed to read camera frame")
 
@@ -138,7 +136,7 @@ class Drawing:
                 )
 
         # Release the camera and close the window if is_camera_active == False
-        self.camera.release()
+        camera.release()
 
     @staticmethod
     def draw_arc(frame: np.ndarray, center: tuple, start_point: tuple, end_point: tuple, angle: float, color: tuple, transparency: float = 0.5) -> None:

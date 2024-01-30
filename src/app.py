@@ -17,22 +17,24 @@ def index():
 
 @app.route('/video')
 def video():
+    global is_camera_active, camera
     draw_utils = Drawing()  # Initialize Drawing class
-    draw_utils.initialize_camera()  # Ensure the camera is initialized
-    return Response(draw_utils.generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
+    is_camera_active, camera = draw_utils.initialize_camera(camera)  # Ensure the camera is initialized
+    print(is_camera_active)
+    return Response(draw_utils.generate_frames(is_camera_active, camera), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
 @app.route('/shutdown_video', methods=['GET'])
 def shutdown_video():
-    global is_camera_active
+    global is_camera_active, camera
     # Signal to stop/run the video capture loop
     if (is_camera_active == False):
         is_camera_active = True
         return {'status': 'Camera on'}
     else:
         is_camera_active = False
+        camera.release()
         return {'status': 'Camera shutdown'}
-
 
 if __name__ == "__main__":
     app.run(debug=True)
