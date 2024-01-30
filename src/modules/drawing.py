@@ -1,8 +1,11 @@
+
 import cv2
 import mediapipe as mp
-from angles import Angles
 import numpy as np
-
+try:
+    from angles import Angles
+except:
+    from .angles import Angles
 
 class Drawing:
     def __init__(self):
@@ -26,12 +29,12 @@ class Drawing:
                 int: 0 if function run correctly
         """
         # Release the camera if it's open
-        if camera is not None and camera.isOpened():
-            camera.release()
+        if self.camera is not None and self.camera.isOpened():
+            self.camera.release()
 
         # Re-initialize the camera
-        camera = cv2.VideoCapture(0)
-        if not camera.isOpened():
+        self.camera = cv2.VideoCapture(0)
+        if not self.camera.isOpened():
             raise RuntimeError("Could not initialize camera")
 
         # Indicate that the camera is now active
