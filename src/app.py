@@ -1,5 +1,9 @@
 from flask import Flask, render_template, Response
-from modules.drawing import Drawing
+try:
+    from modules.drawing import Drawing
+except:
+    from .modules.drawing import Drawing
+
 
 app = Flask(__name__)
 camera = None  # Initialize camera as None
