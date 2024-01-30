@@ -20,7 +20,6 @@ def video():
     global is_camera_active, camera
     draw_utils = Drawing()  # Initialize Drawing class
     is_camera_active, camera = draw_utils.initialize_camera(camera)  # Ensure the camera is initialized
-    print(is_camera_active)
     return Response(draw_utils.generate_frames(is_camera_active, camera), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
